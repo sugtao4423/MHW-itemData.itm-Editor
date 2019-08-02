@@ -8,7 +8,6 @@ import android.support.v7.app.AlertDialog
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.Toast
 import java.io.File
 
 class SaveItmFile(context: Context, itmFileHeader: UByteArray, itemDataList: ArrayList<ItemData>) {
@@ -31,7 +30,10 @@ class SaveItmFile(context: Context, itmFileHeader: UByteArray, itemDataList: Arr
             setPositiveButton(R.string.ok) { _, _ ->
                 val filePath = filePathEdit.prefix + filePathEdit.text.toString()
                 if (File(filePath).exists()) {
-                    Toast.makeText(context, R.string.file_already_exists, Toast.LENGTH_LONG).show()
+                    AlertDialog.Builder(context).also {
+                        it.setMessage(R.string.file_already_exists)
+                        it.show()
+                    }
                     return@setPositiveButton
                 }
 
@@ -40,10 +42,14 @@ class SaveItmFile(context: Context, itmFileHeader: UByteArray, itemDataList: Arr
                     fileBinary += it.uByte32Array
                 }
                 val writeResult = ItmFileUtils.bytes2file(fileBinary, filePath)
-                if (writeResult) {
-                    Toast.makeText(context, R.string.file_saved, Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, R.string.file_save_failed, Toast.LENGTH_SHORT).show()
+                AlertDialog.Builder(context).also {
+                    val messageRes = if (writeResult) {
+                        R.string.file_saved
+                    } else {
+                        R.string.file_save_failed
+                    }
+                    it.setMessage(messageRes)
+                    it.show()
                 }
             }
             show()
