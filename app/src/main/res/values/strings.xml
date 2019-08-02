@@ -23,6 +23,9 @@
     <string name="permission_rejected" translatable="false">(๑•﹏•๑*)</string>
 
     <string name="item_detail">ID: %1$d, Carry: %2$d, Sell: %3$sz, Buy: %4$sz</string>
+    <string name="carry">Carry</string>
+    <string name="sell">Sell</string>
+    <string name="buy">Buy</string>
 
     <string name="item_0001">Potion</string>
     <string name="item_0002">Mega Potion</string>

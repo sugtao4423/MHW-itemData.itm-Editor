@@ -12,6 +12,12 @@ import java.util.*
 
 class ItemListAdapter(private val context: Context) : RecyclerView.Adapter<ItemListAdapter.ViewHolder>() {
 
+    interface OnItemClickListener {
+        fun onItemClicked(context: Context, itemListAdapter: ItemListAdapter, position: Int)
+    }
+
+    var onItemClickListener: OnItemClickListener? = null
+
     val data = arrayListOf<ItemData>()
     private val numberFormat = NumberFormat.getNumberInstance(Locale.US)
 
@@ -28,6 +34,10 @@ class ItemListAdapter(private val context: Context) : RecyclerView.Adapter<ItemL
         holder.itemIcon.setImageResource(ItemDataUtils.getItemIconRes(item))
         holder.itemName.text = ItemDataUtils.getItemName(context, item)
         holder.itemDetail.text = context.getString(R.string.item_detail, item.id, item.carry, numberFormat.format(item.sell), numberFormat.format(item.buy))
+
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.onItemClicked(context, this, position)
+        }
     }
 
     override fun getItemCount(): Int {

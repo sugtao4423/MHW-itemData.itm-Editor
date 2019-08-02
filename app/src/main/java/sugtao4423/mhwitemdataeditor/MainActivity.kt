@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
 
         itemListAdapter = ItemListAdapter(this)
+        itemListAdapter.onItemClickListener = ItemClicked()
         findViewById<ItemDataRecyclerView>(R.id.itemDataRecyclerView).adapter = itemListAdapter
 
         loadItmFile()
