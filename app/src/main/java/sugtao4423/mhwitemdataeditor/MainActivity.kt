@@ -18,9 +18,9 @@ import java.io.InputStream
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        const val CHUNK_FILE_START_POSITION = 38
-        const val CHUNK_FILE_SIZE = 32006
-        val CHUNK_FILE_HEADER = ubyteArrayOf(
+        const val ITM_FILE_START_POSITION = 38
+        const val ITM_FILE_SIZE = 32006
+        val ITM_FILE_HEADER = ubyteArrayOf(
                 0xAEu, 0x00u, 0xE8u, 0x03u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x01u, 0x00u, 0x00u, 0x00u, 0x00u,
                 0x01u, 0x01u, 0x01u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0xFFu, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u,
                 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u
@@ -37,16 +37,16 @@ class MainActivity : AppCompatActivity() {
         itemListAdapter = ItemListAdapter(this)
         findViewById<ItemDataRecyclerView>(R.id.itemDataRecyclerView).adapter = itemListAdapter
 
-        loadChunkFile()
+        loadItmFile()
     }
 
-    private fun loadChunkFile() {
+    private fun loadItmFile() {
         AlertDialog.Builder(this).apply {
             setCancelable(false)
             setTitle(R.string.choose_file)
             setItems(R.array.choose_file_items) { _, which ->
                 when (which) {
-                    0 -> loadBuiltInChunkFile()
+                    0 -> loadBuiltInItmFile()
                     else -> loadLocalFile()
                 }
             }
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadBuiltInChunkFile() {
+    private fun loadBuiltInItmFile() {
         val title = "itemData.itm"
         val items = arrayOf(
                 "chunk0",
@@ -68,9 +68,9 @@ class MainActivity : AppCompatActivity() {
             setCancelable(false)
             setTitle(title)
             setItems(items) { _, which ->
-                val selectedChunkFileName = "itemData_${items[which]}.itm"
+                val selectedItmFileName = "itemData_${items[which]}.itm"
                 try {
-                    val inputStream = assets.open("itemData.itm/$selectedChunkFileName")
+                    val inputStream = assets.open("itemData.itm/$selectedItmFileName")
                     fileOpen(inputStream)
                 } catch (e: IOException) {
                     fileOpenFailed()
@@ -111,14 +111,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fileOpen(inputStream: InputStream) {
-        val chunkFile = ChunkFileUtils.file2bytes(inputStream)
-        if (chunkFile.isEmpty()) {
+        val itmFile = ItmFileUtils.file2bytes(inputStream)
+        if (itmFile.isEmpty()) {
             fileOpenFailed()
             return
         }
-        var isValid = (chunkFile.size == CHUNK_FILE_SIZE)
-        CHUNK_FILE_HEADER.mapIndexed { index: Int, uByte: UByte ->
-            if (uByte != chunkFile[index]) {
+        var isValid = (itmFile.size == ITM_FILE_SIZE)
+        ITM_FILE_HEADER.mapIndexed { index: Int, uByte: UByte ->
+            if (uByte != itmFile[index]) {
                 isValid = false
             }
         }
@@ -128,8 +128,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         val itemDataArray = arrayListOf<ItemData>()
-        for (i in CHUNK_FILE_START_POSITION until chunkFile.size step 32) {
-            val itemData = ItemData(chunkFile.sliceArray(i until i + 32))
+        for (i in ITM_FILE_START_POSITION until itmFile.size step 32) {
+            val itemData = ItemData(itmFile.sliceArray(i until i + 32))
             itemDataArray.add(itemData)
         }
         itemListAdapter.addAll(itemDataArray.toTypedArray())
@@ -137,11 +137,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun fileOpenFailed(isInvalidFile: Boolean = false) {
         if (isInvalidFile) {
-            Toast.makeText(applicationContext, R.string.is_not_itemdata_file, Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, R.string.is_not_itm_file, Toast.LENGTH_LONG).show()
         } else {
             Toast.makeText(applicationContext, R.string.file_open_failed, Toast.LENGTH_LONG).show()
         }
-        loadChunkFile()
+        loadItmFile()
     }
 
     private fun hasWriteExternalStoragePermission(): Boolean {
@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
             loadLocalFile()
         } else {
             Toast.makeText(applicationContext, R.string.permission_rejected, Toast.LENGTH_LONG).show()
-            loadChunkFile()
+            loadItmFile()
         }
     }
 
@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == Menu.FIRST) {
             itemListAdapter.clear()
-            loadChunkFile()
+            loadItmFile()
         }
         return super.onOptionsItemSelected(item)
     }

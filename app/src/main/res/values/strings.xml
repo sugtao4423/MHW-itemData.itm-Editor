@@ -9,7 +9,7 @@
         <item>From local storage</item>
     </string-array>
     <string name="file_open_failed">File open failed…</string>
-    <string name="is_not_itemdata_file">Is not itemData.itm file…</string>
+    <string name="is_not_itm_file">Is not itemData.itm file…</string>
 
     <string name="permission_rejected" translatable="false">(๑•﹏•๑*)</string>
 

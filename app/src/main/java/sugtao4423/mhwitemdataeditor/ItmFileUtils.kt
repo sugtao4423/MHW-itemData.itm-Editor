@@ -3,12 +3,12 @@ package sugtao4423.mhwitemdataeditor
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
-class ChunkFileUtils {
+class ItmFileUtils {
 
     companion object {
 
         @JvmStatic
-        fun chunkFileByteFormat2Int(uByteArray: UByteArray): Int {
+        fun itmFileByteFormat2Int(uByteArray: UByteArray): Int {
             var i = 0
             uByteArray.reversedArray().mapIndexed { index: Int, uByte: UByte ->
                 i = i or uByte.toInt()
@@ -20,7 +20,7 @@ class ChunkFileUtils {
         }
 
         @JvmStatic
-        fun int2ChunkFileByteFormat(num: Int, byteSize: Int): UByteArray {
+        fun int2ItmFileByteFormat(num: Int, byteSize: Int): UByteArray {
             val result = UByteArray(byteSize)
             for (i in 0 until byteSize) {
                 result[i] = (num ushr i * UByte.SIZE_BITS).toUByte()
