@@ -19,6 +19,12 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val CHUNK_FILE_START_POSITION = 38
+        const val CHUNK_FILE_SIZE = 32006
+        val CHUNK_FILE_HEADER = ubyteArrayOf(
+                0xAEu, 0x00u, 0xE8u, 0x03u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x01u, 0x00u, 0x00u, 0x00u, 0x00u,
+                0x01u, 0x01u, 0x01u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0xFFu, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u,
+                0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u
+        )
     }
 
     private lateinit var itemListAdapter: ItemListAdapter
@@ -110,6 +116,16 @@ class MainActivity : AppCompatActivity() {
             fileOpenFailed()
             return
         }
+        var isValid = (chunkFile.size == CHUNK_FILE_SIZE)
+        CHUNK_FILE_HEADER.mapIndexed { index: Int, uByte: UByte ->
+            if (uByte != chunkFile[index]) {
+                isValid = false
+            }
+        }
+        if (!isValid) {
+            fileOpenFailed(true)
+            return
+        }
 
         val itemDataArray = arrayListOf<ItemData>()
         for (i in CHUNK_FILE_START_POSITION until chunkFile.size step 32) {
@@ -119,8 +135,12 @@ class MainActivity : AppCompatActivity() {
         itemListAdapter.addAll(itemDataArray.toTypedArray())
     }
 
-    private fun fileOpenFailed() {
-        Toast.makeText(applicationContext, R.string.file_open_failed, Toast.LENGTH_LONG).show()
+    private fun fileOpenFailed(isInvalidFile: Boolean = false) {
+        if (isInvalidFile) {
+            Toast.makeText(applicationContext, R.string.is_not_itemdata_file, Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(applicationContext, R.string.file_open_failed, Toast.LENGTH_LONG).show()
+        }
         loadChunkFile()
     }
 
