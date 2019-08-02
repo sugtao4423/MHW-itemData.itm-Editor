@@ -8,7 +8,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -141,7 +140,6 @@ class MainActivity : AppCompatActivity() {
         for (i in CHUNK_FILE_START_POSITION until chunkFile.size step 32) {
             val itemData = ItemData(chunkFile.sliceArray(i until i + 32))
             itemDataArray.add(itemData)
-            Log.d("TAG", itemData.toString())
         }
         itemListAdapter.addAll(itemDataArray.toTypedArray())
     }
