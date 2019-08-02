@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
@@ -21,8 +20,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val CHUNK_FILE_START_POSITION = 38
     }
-
-    private var chunkFile = UByteArray(0)
 
     private lateinit var itemListAdapter: ItemListAdapter
 
@@ -68,8 +65,7 @@ class MainActivity : AppCompatActivity() {
                 val selectedChunkFileName = "itemData_${items[which]}.itm"
                 try {
                     val inputStream = assets.open("itemData.itm/$selectedChunkFileName")
-                    chunkFile = file2bytes(inputStream)
-                    fileOpened()
+                    fileOpen(inputStream)
                 } catch (e: IOException) {
                     fileOpenFailed()
                 }
@@ -99,8 +95,7 @@ class MainActivity : AppCompatActivity() {
 
             try {
                 val inputStream = contentResolver.openInputStream(dataUri)
-                chunkFile = file2bytes(inputStream!!)
-                fileOpened()
+                fileOpen(inputStream!!)
             } catch (e: FileNotFoundException) {
                 fileOpenFailed()
             }
@@ -109,28 +104,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun file2bytes(inputStream: InputStream): UByteArray {
-        return try {
-            val bout = ByteArrayOutputStream()
-            val buffer = ByteArray(1024)
-            var len = inputStream.read(buffer)
-            while (len > 0) {
-                bout.write(buffer, 0, len)
-                len = inputStream.read(buffer)
-            }
-            inputStream.close()
-            val uByteArray = UByteArray(bout.size())
-            bout.toByteArray().mapIndexed { index, byte ->
-                uByteArray[index] = byte.toUByte()
-            }
-            uByteArray
-        } catch (e: Exception) {
-            fileOpenFailed()
-            UByteArray(0)
-        }
-    }
-
-    private fun fileOpened() {
+    private fun fileOpen(inputStream: InputStream) {
+        val chunkFile = ChunkFileUtils.file2bytes(inputStream)
         if (chunkFile.isEmpty()) {
             fileOpenFailed()
             return

@@ -1,5 +1,8 @@
 package sugtao4423.mhwitemdataeditor
 
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+
 class ChunkFileUtils {
 
     companion object {
@@ -23,6 +26,27 @@ class ChunkFileUtils {
                 result[i] = (num ushr i * UByte.SIZE_BITS).toUByte()
             }
             return result
+        }
+
+        @JvmStatic
+        fun file2bytes(inputStream: InputStream): UByteArray {
+            return try {
+                val bout = ByteArrayOutputStream()
+                val buffer = ByteArray(1024)
+                var len = inputStream.read(buffer)
+                while (len > 0) {
+                    bout.write(buffer, 0, len)
+                    len = inputStream.read(buffer)
+                }
+                inputStream.close()
+                val uByteArray = UByteArray(bout.size())
+                bout.toByteArray().mapIndexed { index, byte ->
+                    uByteArray[index] = byte.toUByte()
+                }
+                uByteArray
+            } catch (e: Exception) {
+                UByteArray(0)
+            }
         }
 
     }
