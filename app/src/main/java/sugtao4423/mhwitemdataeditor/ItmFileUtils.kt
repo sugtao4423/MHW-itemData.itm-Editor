@@ -1,6 +1,8 @@
 package sugtao4423.mhwitemdataeditor
 
 import java.io.ByteArrayOutputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 
 class ItmFileUtils {
@@ -46,6 +48,22 @@ class ItmFileUtils {
                 uByteArray
             } catch (e: Exception) {
                 UByteArray(0)
+            }
+        }
+
+        @JvmStatic
+        fun bytes2file(uByteArray: UByteArray, filePath: String): Boolean {
+            val bytes = ByteArray(uByteArray.size)
+            uByteArray.mapIndexed { index: Int, uByte: UByte ->
+                bytes[index] = uByte.toByte()
+            }
+            return try {
+                val fos = FileOutputStream(filePath)
+                fos.write(bytes)
+                fos.close()
+                true
+            } catch (e: IOException) {
+                false
             }
         }
 

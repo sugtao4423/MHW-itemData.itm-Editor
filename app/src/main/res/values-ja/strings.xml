@@ -1,6 +1,7 @@
 <resources>
 
     <string name="reload">読み込み</string>
+    <string name="save_as">名前をつけて保存</string>
 
     <string name="choose_file">ファイルを選択</string>
     <string-array name="choose_file_items">
@@ -9,6 +10,10 @@
     </string-array>
     <string name="file_open_failed">ファイルを開けませんでした</string>
     <string name="is_not_itm_file">itemData.itmファイルではないようです</string>
+
+    <string name="file_already_exists">ファイルがすでに存在しています</string>
+    <string name="file_saved">保存しました</string>
+    <string name="file_save_failed">保存に失敗しました…</string>
 
     <string name="item_detail">ID: %1$d, 最大個数: %2$d, 売値: %3$sz, 買値: %4$sz</string>
 

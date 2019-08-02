@@ -25,6 +25,10 @@ class MainActivity : AppCompatActivity() {
                 0x01u, 0x01u, 0x01u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0xFFu, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u,
                 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u
         )
+
+        private const val REQUEST_CODE_SELECT_LOCAL_FILE = 1919
+        private const val PERMISSION_REQUEST_CODE_LOAD_FILE = 810
+        private const val PERMISSION_REQUEST_CODE_SAVE_FILE = 931
     }
 
     private lateinit var itemListAdapter: ItemListAdapter
@@ -82,17 +86,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadLocalFile() {
         if (!hasWriteExternalStoragePermission()) {
-            requestWriteExternalStoragePermission()
+            requestWriteExternalStoragePermission(PERMISSION_REQUEST_CODE_LOAD_FILE)
             return
         }
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "*/*"
-        startActivityForResult(intent, 1919)
+        startActivityForResult(intent, REQUEST_CODE_SELECT_LOCAL_FILE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1919 && resultCode == RESULT_OK && data != null) {
+        if (requestCode == REQUEST_CODE_SELECT_LOCAL_FILE && resultCode == RESULT_OK && data != null) {
             val dataUri = data.data
             if (dataUri == null) {
                 fileOpenFailed()
@@ -144,37 +148,54 @@ class MainActivity : AppCompatActivity() {
         loadItmFile()
     }
 
+    private fun saveItmFile() {
+        if (!hasWriteExternalStoragePermission()) {
+            requestWriteExternalStoragePermission(PERMISSION_REQUEST_CODE_SAVE_FILE)
+            return
+        }
+        SaveItmFile(this, ITM_FILE_HEADER, itemListAdapter.data)
+    }
+
     private fun hasWriteExternalStoragePermission(): Boolean {
         val writeExternalStorage = PermissionChecker.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         return writeExternalStorage == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun requestWriteExternalStoragePermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 810)
+    private fun requestWriteExternalStoragePermission(permissionRequestCode: Int) {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), permissionRequestCode)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode != 810) {
+        if (requestCode != PERMISSION_REQUEST_CODE_LOAD_FILE && requestCode != PERMISSION_REQUEST_CODE_SAVE_FILE) {
             return
         }
         if (permissions[0] == Manifest.permission.WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            loadLocalFile()
+            when (requestCode) {
+                PERMISSION_REQUEST_CODE_LOAD_FILE -> loadLocalFile()
+                PERMISSION_REQUEST_CODE_SAVE_FILE -> saveItmFile()
+            }
         } else {
             Toast.makeText(applicationContext, R.string.permission_rejected, Toast.LENGTH_LONG).show()
-            loadItmFile()
+            if (requestCode == PERMISSION_REQUEST_CODE_LOAD_FILE) {
+                loadItmFile()
+            }
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.add(0, Menu.FIRST, Menu.NONE, R.string.reload)
+        menu?.add(0, Menu.FIRST + 1, Menu.NONE, R.string.save_as)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == Menu.FIRST) {
-            itemListAdapter.clear()
-            loadItmFile()
+        when (item?.itemId) {
+            Menu.FIRST -> {
+                itemListAdapter.clear()
+                loadItmFile()
+            }
+            Menu.FIRST + 1 -> saveItmFile()
         }
         return super.onOptionsItemSelected(item)
     }

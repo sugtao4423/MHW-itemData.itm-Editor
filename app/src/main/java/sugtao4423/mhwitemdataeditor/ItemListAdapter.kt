@@ -12,7 +12,7 @@ import java.util.*
 
 class ItemListAdapter(private val context: Context) : RecyclerView.Adapter<ItemListAdapter.ViewHolder>() {
 
-    private val data = arrayListOf<ItemData>()
+    val data = arrayListOf<ItemData>()
     private val numberFormat = NumberFormat.getNumberInstance(Locale.US)
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int): ViewHolder {
