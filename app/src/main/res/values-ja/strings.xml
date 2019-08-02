@@ -1,5 +1,7 @@
 <resources>
 
+    <string name="reload">読み込み</string>
+
     <string name="choose_file">ファイルを選択</string>
     <string-array name="choose_file_items">
         <item>chunkファイルから選択</item>

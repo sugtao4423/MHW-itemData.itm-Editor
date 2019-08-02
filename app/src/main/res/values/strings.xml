@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_name" translatable="false">MHW itemData Editor</string>
-    <string name="reload" translatable="false">Reload</string>
+    <string name="reload">Reload</string>
 
     <string name="choose_file">Choose File</string>
     <string-array name="choose_file_items">
