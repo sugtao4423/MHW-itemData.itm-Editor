@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var itemListAdapter: ItemListAdapter
+    private var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -185,8 +187,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menu?.add(0, Menu.FIRST, Menu.NONE, R.string.reload)
-        menu?.add(0, Menu.FIRST + 1, Menu.NONE, R.string.save_as)
+        menu ?: return super.onCreateOptionsMenu(menu)
+
+        menu.add(0, Menu.FIRST, Menu.NONE, R.string.reload)
+        menu.add(0, Menu.FIRST + 1, Menu.NONE, R.string.save_as)
+
+        menuInflater.inflate(R.menu.search, menu)
+        searchView = menu.findItem(R.id.menu_search).actionView as SearchView
+        searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            private var oldText: String? = null
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return onQueryTextChange(query)
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != oldText) {
+                    itemListAdapter.filter(newText)
+                    oldText = newText
+                }
+                return false
+            }
+        })
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -199,6 +223,18 @@ class MainActivity : AppCompatActivity() {
             Menu.FIRST + 1 -> saveItmFile()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        if (searchView == null) {
+            super.onBackPressed()
+            return
+        }
+        if (!searchView!!.isIconified) {
+            searchView!!.isIconified = true
+        } else {
+            super.onBackPressed()
+        }
     }
 
 }

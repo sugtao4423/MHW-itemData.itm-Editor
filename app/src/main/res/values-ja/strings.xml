@@ -2,6 +2,7 @@
 
     <string name="reload">読み込み</string>
     <string name="save_as">名前をつけて保存</string>
+    <string name="search">検索</string>
 
     <string name="choose_file">ファイルを選択</string>
     <string-array name="choose_file_items">

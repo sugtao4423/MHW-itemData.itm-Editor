@@ -7,6 +7,7 @@
 
     <string name="reload">Reload</string>
     <string name="save_as">Save As</string>
+    <string name="search">Search</string>
 
     <string name="choose_file">Choose File</string>
     <string-array name="choose_file_items">
