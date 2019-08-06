@@ -1,7 +1,7 @@
 # MHW itemData.itm Editor
 But Android Application
 
-You can download from release page
+You can download from [release page](../../releases/)
 
 Don't need original `itemData.itm` file
 
