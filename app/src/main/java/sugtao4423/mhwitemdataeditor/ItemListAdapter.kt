@@ -1,6 +1,7 @@
 package sugtao4423.mhwitemdataeditor
 
 import android.content.Context
+import android.graphics.*
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -31,13 +32,28 @@ class ItemListAdapter(private val context: Context) : RecyclerView.Adapter<ItemL
         }
         val item = data[position]
 
-        holder.itemIcon.setImageResource(ItemDataUtils.getItemIconRes(item))
+        holder.itemIcon.setImageBitmap(getMaskedImage(item))
         holder.itemName.text = ItemDataUtils.getItemName(context, item)
         holder.itemDetail.text = context.getString(R.string.item_detail, item.id, item.carry, numberFormat.format(item.sell), numberFormat.format(item.buy))
 
         holder.itemView.setOnClickListener {
             onItemClickListener?.onItemClicked(context, this, position)
         }
+    }
+
+    private fun getMaskedImage(itemData: ItemData): Bitmap {
+        val colorImage = BitmapFactory.decodeResource(context.resources, ItemDataUtils.getItemIconColorRes(itemData))
+        val itemImage = BitmapFactory.decodeResource(context.resources, ItemDataUtils.getItemIconRes(itemData))
+
+        val masked = Bitmap.createBitmap(itemImage.width, itemImage.height, Bitmap.Config.ARGB_8888)
+        Canvas(masked).apply {
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+            paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
+
+            drawBitmap(colorImage, 0f, 0f, null)
+            drawBitmap(itemImage, 0f, 0f, paint)
+        }
+        return masked
     }
 
     override fun getItemCount(): Int {
