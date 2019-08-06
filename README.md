@@ -15,6 +15,7 @@ Don't need original `itemData.itm` file
 
 ## features
 * view items
+* search items by item name
 * edit carry, sell and buy values
 * save
 
@@ -23,9 +24,9 @@ Don't need original `itemData.itm` file
 * Japanese
 
 ## screenshots
-![](https://pbs.twimg.com/media/EA_Q9nVUEAA91QN.jpg:small)
-![](https://pbs.twimg.com/media/EA_Q98xU0AAce83.jpg:small)
-![](https://pbs.twimg.com/media/EA_Q-RoUcAIVhLF.jpg:small)
+![](https://pbs.twimg.com/media/EBTcY8dUYAA57pQ.jpg:small)
+![](https://pbs.twimg.com/media/EBTcY8eUwAAwcJ1.jpg:small)
+![](https://pbs.twimg.com/media/EBTcY8fUEAAj2tk.jpg:small)
 
 ## screenshots (jp)
-[ツイートみて](https://twitter.com/sugtao4423/status/1157373360222818304)
+[ツイートみて](https://twitter.com/sugtao4423/status/1158793209406820357)
